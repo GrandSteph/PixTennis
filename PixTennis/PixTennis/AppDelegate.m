@@ -31,7 +31,7 @@
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     if (self.uuid) {
-        [PubNub updateClientState:self.uuid state:@{@"appState":@"OFFLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
+//        [PubNub updateClientState:self.uuid state:@{@"appState":@"OFFLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
     }
     
     self.backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
@@ -52,9 +52,11 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    if (self.uuid && [[PubNub sharedInstance] isConnected]) {
+    if (self.uuid) {
         [PubNub updateClientState:self.uuid state:@{@"appState":@"ONLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
+        NSLog(@"\n *************** DID BECOME ACTIVE ************ \n");
     }
+
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -86,6 +88,8 @@
         
         NSLog(@"********** OBSERVER  Connection State Changed **********\n");
         
+        
+        
         if (isConnected)
         {
             NSLog(@"OBSERVER: Successful Connection!");
@@ -99,6 +103,7 @@
                         break;
                     case PNSubscriptionProcessRestoredState:
                         NSLog(@"PNSubscriptionProcessRestoredState channels:%@", channels);
+                        [PubNub updateClientState:self.uuid state:@{@"appState":@"ONLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
                         
                         break;
                     case PNSubscriptionProcessSubscribedState:
@@ -115,6 +120,8 @@
                         break;
                 }
             }];
+            
+            
         }
         else if (!isConnected || connectionError != nil )
         {
@@ -156,7 +163,60 @@
 #pragma mark PubNub delegates
 
 - (void) pubnubClient:(PubNub *)client didUpdateClientState:(PNClient *)remoteClient {
-    NSLog(@"PUBNUNUB DELEGATE didUpdateClientState");
+    NSLog(@"\n\n\n PUBNUNUB DELEGATE didUpdateClientState \n\n\n");
+}
+
+- (void) pubnubClient:(PubNub *)client didRestoreSubscriptionOn:(NSArray *)channelObjects {
+    NSLog(@"\n\n\n RESUBSCRIBED \n\n\n");
+    
+}
+
+
+
+- (void)pubnubClient:(PubNub *)client willSuspendWithBlock:(void(^)(void(^)(void(^)(void))))preSuspensionBlock {
+    NSLog(@"\n\n\n PRESUSPENSION \n\n\n");
+    
+    if ([client isConnected]) {
+        
+        preSuspensionBlock(^(void(^completionBlock)(void)){
+
+            [PubNub updateClientState:self.uuid state:@{@"appState":@"OFFLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid] withCompletionHandlingBlock:^(PNClient *client, PNError *error) {
+                
+                if (error) {
+                    
+                    // Handle update error
+                    NSLog(@"");
+                }
+                
+                completionBlock();
+            }];
+            
+//            [client sendMessage:@"Suspending" toChannel:[PNChannel channelWithName:@"Stephane"] withCompletionBlock:^(PNMessageState state, id data) {
+//                
+//                if (state != PNMessageSending) {
+//                    
+//                    if (state == PNMessageSendingError) {
+//                        
+//                        // Handle message sending error
+//                
+//                    }
+//                    
+//                    // Always call this block as soon as required amount of tasks completed.
+//                    completionBlock();
+//                }
+//            }];
+            
+        });
+    }
+}
+
+- (void) pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
+    NSLog(@"PUBNUNUB DELEGATE didReceiveMessage %@", message.message);
+    NSDictionary *messageContent = [NSDictionary dictionaryWithDictionary:message.message];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"message" object:self userInfo:messageContent];
+
+    
 }
 
 #pragma mark - Core Data stack

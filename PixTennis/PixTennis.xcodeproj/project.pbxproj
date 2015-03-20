@@ -15,11 +15,11 @@
 		BDFD4A621ABA12EF0036868A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BDFD4A611ABA12EF0036868A /* Images.xcassets */; };
 		BDFD4A651ABA12EF0036868A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = BDFD4A631ABA12EF0036868A /* LaunchScreen.xib */; };
 		BDFD4A711ABA12EF0036868A /* PixTennisTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BDFD4A701ABA12EF0036868A /* PixTennisTests.m */; };
-		BDFD4A7D1ABA142A0036868A /* PubNub.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BDFD4A7B1ABA142A0036868A /* PubNub.bundle */; };
-		BDFD4A7E1ABA142A0036868A /* PubNub.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDFD4A7C1ABA142A0036868A /* PubNub.framework */; };
 		BDFD4A801ABA14380036868A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDFD4A7F1ABA14380036868A /* CFNetwork.framework */; };
 		BDFD4A821ABA14470036868A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDFD4A811ABA14470036868A /* SystemConfiguration.framework */; };
 		BDFD4A841ABA14750036868A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BDFD4A831ABA14750036868A /* libz.dylib */; };
+		E8165E631ABB09B8003348B7 /* PubNub.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E8165E611ABB09B8003348B7 /* PubNub.bundle */; };
+		E8165E641ABB09B8003348B7 /* PubNub.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8165E621ABB09B8003348B7 /* PubNub.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,11 +47,11 @@
 		BDFD4A6A1ABA12EF0036868A /* PixTennisTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PixTennisTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDFD4A6F1ABA12EF0036868A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BDFD4A701ABA12EF0036868A /* PixTennisTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PixTennisTests.m; sourceTree = "<group>"; };
-		BDFD4A7B1ABA142A0036868A /* PubNub.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PubNub.bundle; sourceTree = "<group>"; };
-		BDFD4A7C1ABA142A0036868A /* PubNub.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PubNub.framework; sourceTree = "<group>"; };
 		BDFD4A7F1ABA14380036868A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		BDFD4A811ABA14470036868A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		BDFD4A831ABA14750036868A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		E8165E611ABB09B8003348B7 /* PubNub.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PubNub.bundle; sourceTree = "<group>"; };
+		E8165E621ABB09B8003348B7 /* PubNub.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PubNub.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,10 +59,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8165E641ABB09B8003348B7 /* PubNub.framework in Frameworks */,
 				BDFD4A841ABA14750036868A /* libz.dylib in Frameworks */,
 				BDFD4A821ABA14470036868A /* SystemConfiguration.framework in Frameworks */,
 				BDFD4A801ABA14380036868A /* CFNetwork.framework in Frameworks */,
-				BDFD4A7E1ABA142A0036868A /* PubNub.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,11 +140,11 @@
 		BDFD4A7A1ABA13FE0036868A /* Framework */ = {
 			isa = PBXGroup;
 			children = (
+				E8165E611ABB09B8003348B7 /* PubNub.bundle */,
+				E8165E621ABB09B8003348B7 /* PubNub.framework */,
 				BDFD4A831ABA14750036868A /* libz.dylib */,
 				BDFD4A811ABA14470036868A /* SystemConfiguration.framework */,
 				BDFD4A7F1ABA14380036868A /* CFNetwork.framework */,
-				BDFD4A7B1ABA142A0036868A /* PubNub.bundle */,
-				BDFD4A7C1ABA142A0036868A /* PubNub.framework */,
 			);
 			name = Framework;
 			sourceTree = "<group>";
@@ -231,7 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BDFD4A601ABA12EF0036868A /* Main.storyboard in Resources */,
-				BDFD4A7D1ABA142A0036868A /* PubNub.bundle in Resources */,
+				E8165E631ABB09B8003348B7 /* PubNub.bundle in Resources */,
 				BDFD4A651ABA12EF0036868A /* LaunchScreen.xib in Resources */,
 				BDFD4A621ABA12EF0036868A /* Images.xcassets in Resources */,
 			);
