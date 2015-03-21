@@ -53,7 +53,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     if (self.uuid) {
-        [PubNub updateClientState:self.uuid state:@{@"appState":@"ONLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
+        //[PubNub updateClientState:self.uuid state:@{@"appState":@"ONLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
         NSLog(@"\n *************** DID BECOME ACTIVE ************ \n");
     }
 
@@ -96,14 +96,14 @@
             
             PNChannel *theChannel = [PNChannel channelWithName:self.uuid shouldObservePresence:NO];
             
-            [PubNub subscribeOn:@[theChannel] withClientState:@{@"appState":@"ONLINE",@"userNickname":self.uuid} andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+            [PubNub subscribeOn:@[theChannel] withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
                 switch (state) {
                     case PNSubscriptionProcessNotSubscribedState:
                         NSLog(@"PNSubscriptionProcessNotSubscribedState channels:%@" , channels);
                         break;
                     case PNSubscriptionProcessRestoredState:
                         NSLog(@"PNSubscriptionProcessRestoredState channels:%@", channels);
-                        [PubNub updateClientState:self.uuid state:@{@"appState":@"ONLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
+                        //[PubNub updateClientState:self.uuid state:@{@"appState":@"ONLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
                         
                         break;
                     case PNSubscriptionProcessSubscribedState:
@@ -168,6 +168,7 @@
 
 - (void) pubnubClient:(PubNub *)client didRestoreSubscriptionOn:(NSArray *)channelObjects {
     NSLog(@"\n\n\n RESUBSCRIBED \n\n\n");
+    [PubNub updateClientState:self.uuid state:@{@"appState":@"ONLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
     
 }
 
