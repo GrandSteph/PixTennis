@@ -31,7 +31,10 @@
 
 - (IBAction)sendMessage:(id)sender {
     
-    [PubNub sendMessage:@{@"Message from":@"Button"} toChannel:[PNChannel channelWithName:@"Stephane"] withCompletionBlock:^(PNMessageState state, id data) {
+    NSDate *sendTime = [NSDate date];
+    NSDate __block *receivedTime;
+    
+    [PubNub sendMessage:@{@"text":[NSString stringWithFormat:@"%@",[NSDate date]]} toChannel:[PNChannel channelWithName:@"Stephane"] withCompletionBlock:^(PNMessageState state, id data) {
         
         switch (state) {
             case PNMessageSending:
@@ -39,21 +42,21 @@
                 
                 break;
             case PNMessageSendingError:
-
                 NSLog(@"message error");
-                
                 
                 break;
             case PNMessageSent:
-                
                 NSLog(@"message sent");
-
+                receivedTime = [NSDate date];
                 
                 break;
             default:
                 break;
         }
     }];
+    NSTimeInterval latency = [receivedTime timeIntervalSinceDate:sendTime];
+    
+    NSLog(@"\n\n\n\n Interval %f \n\n\n\n",latency);
     
     //[PubNub updateClientState:@"Stephane" state:@{@"appState":@"ONLINE",@"userNickname":@"Stephane"} forObject:[PNChannel channelWithName:@"Stephane"]];
 
@@ -69,7 +72,8 @@
     
     NSDictionary *messageContent = [NSDictionary dictionaryWithDictionary:notification.userInfo];
     
-    self.message.text = [[messageContent objectForKey:@"Message from"] stringByAppendingString:self.message.text];
+    self.message.text = [NSString stringWithFormat:@"%@ - %@",[messageContent objectForKey:@"text"],[NSDate date]];
+
     
     [PubNub requestParticipantsListWithClientIdentifiers:YES clientState:YES andCompletionBlock:^(PNHereNow *presenceInformation, NSArray *channels, PNError *error) {
         NSLog(@"");

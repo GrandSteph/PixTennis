@@ -93,66 +93,38 @@
         if (isConnected)
         {
             NSLog(@"OBSERVER: Successful Connection!");
-            
-            PNChannel *theChannel = [PNChannel channelWithName:self.uuid shouldObservePresence:NO];
-            
-            [PubNub subscribeOn:@[theChannel] withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
-                switch (state) {
-                    case PNSubscriptionProcessNotSubscribedState:
-                        NSLog(@"PNSubscriptionProcessNotSubscribedState channels:%@" , channels);
-                        break;
-                    case PNSubscriptionProcessRestoredState:
-                        NSLog(@"PNSubscriptionProcessRestoredState channels:%@", channels);
-                        //[PubNub updateClientState:self.uuid state:@{@"appState":@"ONLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
-                        
-                        break;
-                    case PNSubscriptionProcessSubscribedState:
-                    {
-                        NSLog(@"PNSubscriptionProcessSubscribedState channels:%@", channels);
-                        [PubNub updateClientState:self.uuid state:@{@"appState":@"ONLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
-                        
-                    }
-                        break;
-                    case PNSubscriptionProcessWillRestoreState:
-                        NSLog(@"PNSubscriptionProcessWillRestoreState channels:%@", channels);
-                        break;
-                    default:
-                        break;
-                }
-            }];
-            
-            
+ 
         }
         else if (!isConnected || connectionError != nil )
         {
             NSLog(@"OBSERVER: Error %@, Connection Failed!", connectionError.localizedDescription);
             
-            //            if (connectionError.code == kPNClientConnectionFailedOnInternetFailureError) {
-            //                // wait 1 second
-            //                int64_t delayInSeconds = 1.0;
-            //                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-            //                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            //                    PNLog(PNLogGeneralLevel, self, @"Connection will be established as soon as internet connection will be restored");
-            //                    UIAlertView *reconnect = [[UIAlertView alloc] initWithTitle: @"PUBNUB - status"
-            //                                                                        message:@"Will Reconnect to PN when not offline anymore"
-            //                                                                       delegate:nil
-            //                                                              cancelButtonTitle: @"OK"
-            //                                                              otherButtonTitles: nil];
-            //                    [reconnect show];
-            //
-            //                });
-            //            } else {
-            //                UIAlertView *connectionErrorAlert = [UIAlertView new];
-            //                connectionErrorAlert.title = [NSString stringWithFormat:@"%@(%@)",
-            //                                              [connectionError localizedDescription],
-            //                                              NSStringFromClass([self class])];
-            //                connectionErrorAlert.message = [NSString stringWithFormat:@"Reason:\n%@\n\nSuggestion:\n%@",
-            //                                                [connectionError localizedFailureReason],
-            //                                                [connectionError localizedRecoverySuggestion]];
-            //                [connectionErrorAlert addButtonWithTitle:@"OK"];
-            //
-            //                [connectionErrorAlert show];
-            //            }
+                        if (connectionError.code == kPNClientConnectionFailedOnInternetFailureError) {
+                            // wait 1 second
+                            int64_t delayInSeconds = 1.0;
+                            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                //PNLog(PNLogGeneralLevel, self, @"Connection will be established as soon as internet connection will be restored");
+                                UIAlertView *reconnect = [[UIAlertView alloc] initWithTitle: @"PUBNUB - status"
+                                                                                    message:@"Will Reconnect to PN when not offline anymore"
+                                                                                   delegate:nil
+                                                                          cancelButtonTitle: @"OK"
+                                                                          otherButtonTitles: nil];
+                                [reconnect show];
+            
+                            });
+                        } else {
+                            UIAlertView *connectionErrorAlert = [UIAlertView new];
+                            connectionErrorAlert.title = [NSString stringWithFormat:@"%@(%@)",
+                                                          [connectionError localizedDescription],
+                                                          NSStringFromClass([self class])];
+                            connectionErrorAlert.message = [NSString stringWithFormat:@"Reason:\n%@\n\nSuggestion:\n%@",
+                                                            [connectionError localizedFailureReason],
+                                                            [connectionError localizedRecoverySuggestion]];
+                            [connectionErrorAlert addButtonWithTitle:@"OK"];
+            
+                            [connectionErrorAlert show];
+                        }
             
             
         }
@@ -162,17 +134,27 @@
 
 #pragma mark PubNub delegates
 
+- (void) pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {
+    NSLog(@"\n\n\n didConnectToOrigin \n\n\n");
+    
+    PNChannel *theChannel = [PNChannel channelWithName:self.uuid shouldObservePresence:NO];
+    [PubNub subscribeOn:@[theChannel]];
+}
+
 - (void) pubnubClient:(PubNub *)client didUpdateClientState:(PNClient *)remoteClient {
-    NSLog(@"\n\n\n PUBNUNUB DELEGATE didUpdateClientState \n\n\n");
+    NSLog(@"\n\n\n PUBNUNUB DELEGATE didUpdateClientState with state %@ \n\n\n", remoteClient);
 }
 
 - (void) pubnubClient:(PubNub *)client didRestoreSubscriptionOn:(NSArray *)channelObjects {
-    NSLog(@"\n\n\n RESUBSCRIBED \n\n\n");
+    NSLog(@"\n\n\n didRestoreSubscriptionOn \n\n\n");
     [PubNub updateClientState:self.uuid state:@{@"appState":@"ONLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
     
 }
 
-
+- (void) pubnubClient:(PubNub *)client didSubscribeOn:(NSArray *)channelObjects {
+    NSLog(@"\n\n\n didSubscribeOn \n\n\n");
+    [PubNub updateClientState:self.uuid state:@{@"appState":@"ONLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
+}
 
 - (void)pubnubClient:(PubNub *)client willSuspendWithBlock:(void(^)(void(^)(void(^)(void))))preSuspensionBlock {
     NSLog(@"\n\n\n PRESUSPENSION \n\n\n");
@@ -188,25 +170,15 @@
                     // Handle update error
                     NSLog(@"");
                 }
+                self.backgroundTask = UIBackgroundTaskInvalid;
                 
+                // If application come back to foreground while completion block is not finished. Then update to ONLINE.
+                // If would otherwise complete this stay in OFFLINE state
+                if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
+                    [PubNub updateClientState:self.uuid state:@{@"appState":@"ONLINE",@"userNickname":self.uuid} forObject:[PNChannel channelWithName:self.uuid]];
+                }
                 completionBlock();
             }];
-            
-//            [client sendMessage:@"Suspending" toChannel:[PNChannel channelWithName:@"Stephane"] withCompletionBlock:^(PNMessageState state, id data) {
-//                
-//                if (state != PNMessageSending) {
-//                    
-//                    if (state == PNMessageSendingError) {
-//                        
-//                        // Handle message sending error
-//                
-//                    }
-//                    
-//                    // Always call this block as soon as required amount of tasks completed.
-//                    completionBlock();
-//                }
-//            }];
-            
         });
     }
 }
