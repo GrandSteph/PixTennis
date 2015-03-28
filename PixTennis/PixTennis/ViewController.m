@@ -34,7 +34,7 @@
     NSDate *sendTime = [NSDate date];
     NSDate __block *receivedTime;
     
-    [PubNub sendMessage:@{@"text":[NSString stringWithFormat:@"%@",[NSDate date]]} toChannel:[PNChannel channelWithName:@"Stephane"] withCompletionBlock:^(PNMessageState state, id data) {
+    [PubNub sendMessage:@{@"text":[NSString stringWithFormat:@"%@",[NSDate date]]} toChannel:[PNChannel channelWithName:@"StephaneChannel"] withCompletionBlock:^(PNMessageState state, id data) {
         
         switch (state) {
             case PNMessageSending:

@@ -21,7 +21,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [PubNub setDelegate:self];
-    self.uuid = @"Stephane";
+    self.uuid = @"StephaneChannel";
     [self ConnectToPNWithCurrentUser:self.uuid];
     
     return YES;
